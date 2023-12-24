@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Interest Calculator</title>
+</head>
+<body>
+    <h1>Simple Interest Calculator</h1>
+    <form id="interestForm" action="/calculate-interest" method="post">
+        <label for="principal">Principal Amount:</label>
+        <input type="number" id="principal" name="principal" required><br>
+
+        <label for="rate">Rate of Interest:</label>
+        <input type="number" id="rate" name="rate" step="0.01" required><br>
+
+        <label for="years">Number of Years:</label>
+        <input type="number" id="years" name="years" required><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        document.getElementById('interestForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const principal = document.getElementById('principal').value;
+            const rate = document.getElementById('rate').value;
+            const years = document.getElementById('years').value;
+
+            const formData = new URLSearchParams();
+            formData.append('principal', principal);
+            formData.append('rate', rate);
+            formData.append('years', years);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData.toString(),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultElement = document.getElementById('result');
+                resultElement.textContent = data.interest !== null ? `Simple Interest: ${data.interest}` : "Error calculating interest";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
